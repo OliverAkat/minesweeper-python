@@ -1,10 +1,23 @@
+import helpers
+
 class Minesweeper:
     def __init__(self):
-        pass
+        self.initialize_board()
 
     # Initializes the board to default values
     def initialize_board(self):
-        pass
+        self.board_width = helpers.prompt_int("Välj bredden på brädet (1-99): ", 1, 99)
+        self.board_height = helpers.prompt_int("Välj höjden på brädet (1-99): ", 1, 99)
+        self.square_count = self.board_height*self.board_width
+        self.bomb_count = helpers.prompt_int(f"Välj antalet bomber på brädet (1-{self.square_count - 1}): ", 1, self.square_count)
+
+        self.board = [[0]*self.board_width for _ in range(self.board_height)]
+        self.dug_squares = set()
+        self.alive = True
+        self.flagged_cells = set()
+
+        self.place_bombs()
+        self.assign_values()
 
     # Welcomes the user to the game
     def intro(self):
