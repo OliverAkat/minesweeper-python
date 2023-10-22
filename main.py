@@ -46,12 +46,15 @@ class Minesweeper:
 
         print(start_row)
 
-    # Places a bomb on an empty cell
+    def place_bomb(self):
+        rand_x, rand_y = self.get_random_empty_cell()
+        self.board[rand_y][rand_x] = -1
+        self.dug_squares.add((rand_y, rand_x))
+
+    # Places all the bombs on the board
     def place_bombs(self):
         for _ in range(self.bomb_count):
-            rand_x, rand_y = self.get_random_empty_cell()
-            self.board[rand_y][rand_x] = -1
-            self.dug_squares.add((rand_y, rand_x))
+            self.place_bomb()
 
     # Assigns the value to all opened cells
     def assign_values(self):
@@ -73,38 +76,75 @@ class Minesweeper:
     # Counts the amount of neighbouring bombs to a cell
     def count_neighbouring_bombs(self, cell_x, cell_y):
         neighbor_count = 0
-        for row in range(cell_y-1, cell_y+2):
-            for col in range(cell_x-1, cell_x+2):
-                if not self.is_cell_in_bounds(col, row):
+        for y in range(cell_y-1, cell_y+2):
+            for x in range(cell_x-1, cell_x+2):
+                if not self.is_cell_in_bounds(x, y):
                     continue
 
-                is_bomb = self.board[row][col] == -1
-                is_same_cell = (row, col) == (cell_y, cell_x)
-                if self.is_cell_in_bounds(col, row) and is_bomb and not is_same_cell:
+                is_bomb = self.board[y][x] == -1
+                is_same_cell = (y, x) == (cell_y, cell_x)
+                if self.is_cell_in_bounds(x, y) and is_bomb and not is_same_cell:
                     neighbor_count += 1
 
         return neighbor_count
 
 
     # Digs a cell
-    def dig(self, cell_index):
-        pass
+    def dig(self, cell_x, cell_y):
+
+        if (cell_x, cell_y) in self.dug_squares:
+            return
+
+        if self.board[cell_y][cell_x] == -1:
+            return False
+
+        if self.board[cell_y][cell_x] > 0:
+            return True
+
+        for x in range(cell_x-1, cell_x+2):
+            for y in range(cell_y-1, cell_y+2):
+                is_same_cell = (x, y) == cell_x, cell_y
+                cell_is_dug = (x, y) in self.dug_squares
+
+                if self.is_cell_in_bounds(x, y) and not is_same_cell and not cell_is_dug:
+                    self.dig(x, y)
+
+        return True
+
 
     # Toggles the flag for a given cell
-    def toggle_flag(self, cell_index):
-        pass
+    def toggle_flag(self, cell_x, cell_y):
+        if (cell_x, cell_y) in self.dug_squares:
+            self.dug_squares.remove((cell_x, cell_y))
+            return
+
+        self.dug_squares.add((cell_x, cell_y))
+
+
 
     # Moves a bomb (needed if the first click was on a bomb)
     def move_bomb(self, cell_x, cell_y):
-        pass
+        self.board[cell_y][cell_x] = 0
+
+        new_x, new_y = self.get_random_empty_cell()
+
+        # Make sure we don't place the bomb on the same place as before
+        while (new_x, new_y) == (cell_x, cell_y):
+            new_x, new_y = self.get_random_empty_cell()
+
+        self.board[cell_y][cell_x] = -1
+        self.assign_values()
+
+
 
     # Endgame screen for wins
     def win_screen(self):
+        print('Grattis på födelsedagen du vann!!!!!!!')
         pass
 
     # Endgame screen for losses
     def loss_screen(self):
-        pass
+        print('Ajdå jobbigt läge brush du torskade :(')
 
     # Handles the endgame
     def handle_endgame(self):
