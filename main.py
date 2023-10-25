@@ -37,6 +37,7 @@ class Minesweeper:
     def get_random_empty_cell(self):
         return (random.randint(0, self.board_width-1),random.randint(0,self.board_height-1))
 
+    
     def display_board(self): 
         for n in range(self.board_height):
             print(self.board[n])
