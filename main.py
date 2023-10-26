@@ -37,19 +37,22 @@ class Minesweeper:
 
         return rand_x, rand_y
 
-    def display_board(self):
+
+    # diplays the board with added graphics
+    def display_board(self, board):
+        
         start_row = '+------'*self.board_width + '+'
 
         for n in range(self.board_height):
             print(start_row)
-            print('|  ' + '  |  '.join([str(i) if i == -1 else f" {str(i)}" for i in self.board[n]]) + '  |')
+            print('|  ' + '  |  '.join([str(i) if i == -1 else f" {str(i)}" for i in board[n]]) + '  |')
 
         print(start_row)
 
     def place_bomb(self):
         rand_x, rand_y = self.get_random_empty_cell()
         self.board[rand_y][rand_x] = -1
-        self.dug_squares.add((rand_y, rand_x))
+        #self.dug_squares.add((rand_y, rand_x))
 
     # Places all the bombs on the board
     def place_bombs(self):
@@ -91,7 +94,6 @@ class Minesweeper:
 
     # Digs a cell
     def dig(self, cell_x, cell_y):
-
         if (cell_x, cell_y) in self.dug_squares:
             return
 
@@ -99,6 +101,7 @@ class Minesweeper:
             return False
 
         if self.board[cell_y][cell_x] > 0:
+            self.dug_squares.add((cell_x,cell_y)) 
             return True
 
         for x in range(cell_x-1, cell_x+2):
@@ -120,8 +123,6 @@ class Minesweeper:
 
         self.dug_squares.add((cell_x, cell_y))
 
-
-
     # Moves a bomb (needed if the first click was on a bomb)
     def move_bomb(self, cell_x, cell_y):
         self.board[cell_y][cell_x] = 0
@@ -136,6 +137,17 @@ class Minesweeper:
         self.assign_values()
 
 
+    # returns a board with all the numbers replaced
+    def hide_board(self):
+        hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)]
+
+        for (x,y) in self.dug_squares:
+            hiddenboard[x][y] = "q"
+
+        return hiddenboard
+
+    def get_board(self):
+        return self.board
 
     # Endgame screen for wins
     def win_screen(self):
@@ -153,6 +165,14 @@ class Minesweeper:
 game = Minesweeper()
 
 
-game.display_board()
+print(game.dug_squares)
+game.display_board(game.hide_board())
+game.display_board(game.get_board())
+
+
+
+
+
+
 
 
