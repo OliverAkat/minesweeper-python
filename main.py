@@ -143,6 +143,11 @@ class Minesweeper:
 
         for (x,y) in self.dug_squares:
             hiddenboard[x][y] = "q"
+        
+        for i in range(self.board_width):
+            for j in range(self.board_height):
+                #if self.board[]
+                pass
 
         return hiddenboard
 
