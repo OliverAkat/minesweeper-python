@@ -1,6 +1,8 @@
 import helpers
 import random
 
+from colorama import Fore
+
 class Minesweeper:
     def __init__(self):
         self.initialize_board()
@@ -14,7 +16,9 @@ class Minesweeper:
 
 
         self.board = [[0]*self.board_width for _ in range(self.board_height)]
+        self.hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)]
         self.dug_squares = set()
+        
         self.alive = True
         self.flagged_cells = set()
 
@@ -97,12 +101,14 @@ class Minesweeper:
         if (cell_x, cell_y) in self.dug_squares:
             return
 
-        if self.board[cell_y][cell_x] == -1: 
+        if self.board[cell_x][cell_y] == -1: 
             return False
 
-        if self.board[cell_y][cell_x] > 0:
+        if self.board[cell_x][cell_y] > 0:
             self.dug_squares.add((cell_x,cell_y)) 
             return True
+
+        self.dug_squares.add((cell_x,cell_y)) # tror inte denna ska vara här men funkar inte annars
 
         for x in range(cell_x-1, cell_x+2):
             for y in range(cell_y-1, cell_y+2):
@@ -110,6 +116,7 @@ class Minesweeper:
                 cell_is_dug = (x, y) in self.dug_squares
 
                 if self.is_cell_in_bounds(x, y) and not is_same_cell and not cell_is_dug:
+                    
                     self.dig(x, y)
 
         return True
@@ -121,7 +128,8 @@ class Minesweeper:
             self.dug_squares.remove((cell_x, cell_y))
             return
 
-        self.dug_squares.add((cell_x, cell_y))
+        self.flagged_cells.add((cell_x, cell_y))
+
 
     # Moves a bomb (needed if the first click was on a bomb)
     def move_bomb(self, cell_x, cell_y):
@@ -139,13 +147,17 @@ class Minesweeper:
 
     # returns a board with all the numbers replaced
     def hide_board(self):
-        hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)]
+        #hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)]
 
         # adds the dug squares to the hidden board
         for (x,y) in self.dug_squares:
-            hiddenboard[x][y] = self.board[x][y]
+            print(x,y)
+            self.hiddenboard[x][y] = self.board[x][y]
+
+        for (x,y) in self.flagged_cells:
+            self.hiddenboard[x][y] = "f"
         
-        return hiddenboard
+        return self.hiddenboard
 
     def get_board(self):
         return self.board
@@ -166,18 +178,29 @@ class Minesweeper:
 game = Minesweeper()
 
 print(game.dug_squares)
-game.display_board(game.hide_board())
-game.display_board(game.get_board())
+#game.display_board(game.hide_board())
+game.display_board(game.get_board()) # debug
+game.display_board(game.hide_board()) 
 
 while True:
-    game.display_board(game.hide_board())
+    
     cell_x = int(input("x: "))
     cell_y = int(input("y: "))
-    
-    ok = game.dig(cell_x, cell_y)
 
-    if ok is False:
-        break
+    choice = input("dig or flag? d/f")
+
+    if choice == "f":
+        game.toggle_flag(cell_y,cell_x)
+    else:
+        ok = game.dig(cell_y, cell_x)
+        if ok is False:
+            break
+
+
+    #game.dig(cell_x, cell_y)
+   
+    game.display_board(game.hide_board())
+
 
 print("Du förlorade, eller vann...")
     
