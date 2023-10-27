@@ -97,7 +97,7 @@ class Minesweeper:
         if (cell_x, cell_y) in self.dug_squares:
             return
 
-        if self.board[cell_y][cell_x] == -1:
+        if self.board[cell_y][cell_x] == -1: 
             return False
 
         if self.board[cell_y][cell_x] > 0:
@@ -141,14 +141,10 @@ class Minesweeper:
     def hide_board(self):
         hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)]
 
+        # adds the dug squares to the hidden board
         for (x,y) in self.dug_squares:
-            hiddenboard[x][y] = "q"
+            hiddenboard[x][y] = self.board[x][y]
         
-        for i in range(self.board_width):
-            for j in range(self.board_height):
-                #if self.board[]
-                pass
-
         return hiddenboard
 
     def get_board(self):
@@ -169,10 +165,27 @@ class Minesweeper:
 
 game = Minesweeper()
 
-
 print(game.dug_squares)
 game.display_board(game.hide_board())
 game.display_board(game.get_board())
+
+while True:
+    game.display_board(game.hide_board())
+    cell_x = int(input("x: "))
+    cell_y = int(input("y: "))
+    
+    ok = game.dig(cell_x, cell_y)
+
+    if ok is False:
+        break
+
+print("Du förlorade, eller vann...")
+    
+     
+
+
+
+
 
 
 
