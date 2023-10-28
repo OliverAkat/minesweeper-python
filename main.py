@@ -16,7 +16,7 @@ class Minesweeper:
 
 
         self.board = [[0]*self.board_width for _ in range(self.board_height)]
-        self.hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)]
+        self.hiddenboard = [["w"]*self.board_width for _ in range(self.board_height)] # Replace "w" 
         self.dug_squares = set()
         
         self.alive = True
@@ -179,11 +179,14 @@ game = Minesweeper()
 
 print(game.dug_squares)
 #game.display_board(game.hide_board())
-game.display_board(game.get_board()) # debug
+#game.display_board(game.get_board()) # debug
 game.display_board(game.hide_board()) 
 
-while True:
-    
+
+# gameloop, ska vi flytta den till en separat fil?
+while True: 
+    if game.dug_squares == len(game.board) and game.flagged_cells == game.bomb_count:
+        game.win_screen()
     cell_x = int(input("x: "))
     cell_y = int(input("y: "))
 
@@ -194,6 +197,7 @@ while True:
     else:
         ok = game.dig(cell_y, cell_x)
         if ok is False:
+            game.loss_screen()
             break
 
 
@@ -202,7 +206,7 @@ while True:
     game.display_board(game.hide_board())
 
 
-print("Du förlorade, eller vann...")
+
     
      
 
