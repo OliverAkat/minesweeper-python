@@ -1,5 +1,8 @@
 import helpers
 import random
+import sys
+
+sys.setrecursionlimit(2**31-1)
 
 class Minesweeper:
     def __init__(self):
@@ -22,7 +25,7 @@ class Minesweeper:
 
 
         self.board = [[0]*self.board_width for _ in range(self.board_height)]
-        # self.hidden_board = [["*"] * self.board_width for _ in range(self.board_height)] # Replace "w"
+        
         self.dug_squares = set()
         
         self.alive = True
@@ -70,9 +73,6 @@ VÄLKOMMEN TILL
 
         return hidden_board
 
-    def get_board(self):
-        return self.board
-
     # Diplays the board with added graphics
     def display_board(self, is_hidden):
         board = self.get_hidden_board() if is_hidden else self.get_board()
@@ -84,6 +84,8 @@ VÄLKOMMEN TILL
 
         print(start_row)
 
+
+    # Gets random position and places one bomb 
     def place_bomb(self):
         rand_x, rand_y = self.get_random_empty_cell()
         self.board[rand_y][rand_x] = -1
