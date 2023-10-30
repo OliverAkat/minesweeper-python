@@ -150,8 +150,8 @@ VÄLKOMMEN TILL
 
     # Toggles the flag for a given cell
     def toggle_flag(self, cell_x, cell_y):
-        if (cell_x, cell_y) in self.dug_squares:
-            self.dug_squares.remove((cell_x, cell_y))
+        if (cell_x, cell_y) in self.flagged_cells:
+            self.flagged_cells.remove((cell_x, cell_y))
             return
 
         self.flagged_cells.add((cell_x, cell_y))
