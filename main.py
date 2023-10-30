@@ -75,7 +75,7 @@ VÄLKOMMEN TILL
 
     # Diplays the board with added graphics
     def display_board(self, is_hidden):
-        board = self.get_hidden_board() if is_hidden else self.get_board()
+        board = self.get_hidden_board() if is_hidden else self.board
         start_row = '+------'*self.board_width + '+'
 
         for n in range(self.board_height):
